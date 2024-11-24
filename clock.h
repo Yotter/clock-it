@@ -71,13 +71,13 @@ signals:
     void intervalChanged();
 
 private:
+    int intervalInSeconds;
+    QDateTime startedAt; // Can be null if clock not active.
+    bool isActive;
     QTimer expirationTimer;
     QTimer tickTimer;
     QString name;
-    int intervalInSeconds;
-    bool isActive;
     int nCompletions;
-    QDateTime startedAt; // Can be null if clock not active.
 };
 
 #endif // CLOCK_H

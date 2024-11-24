@@ -13,19 +13,20 @@ Clock::Clock(QString name,
 {
     connect(&tickTimer, &QTimer::timeout, this, &Clock::ticks);
     connect(&expirationTimer, &QTimer::timeout, this, &Clock::timeout);
+    tickTimer.setInterval(1000);
     expirationTimer.setInterval(intervalInSeconds * 1000);
     expirationTimer.setSingleShot(true);
     if (isActive) {
         // Start counting down
         if (startedAt.isNull()) {
-            startedAt = QDateTime::currentDateTime();
+            this->startedAt = QDateTime::currentDateTimeUtc();
         } else {
-            startedAt = startedAt;
+            this->startedAt = startedAt;
         }
         expirationTimer.start();
         tickTimer.start();
     } else {
-        startedAt = QDateTime();
+        this->startedAt = QDateTime();
     }
 }
 
@@ -39,8 +40,8 @@ int Clock::getTimeLeftSeconds()
     if (startedAt.isNull()) {
         return intervalInSeconds;
     } else {
-        QDateTime currTime = QDateTime::currentDateTime();
-        return intervalInSeconds - (startedAt.msecsTo(currTime));
+        QDateTime currTime = QDateTime::currentDateTimeUtc();
+        return std::round((intervalInSeconds * 1000 - (startedAt.msecsTo(currTime))) / 1000.0);
     }
 }
 
@@ -63,7 +64,7 @@ void Clock::reset()
     emit nCompletionsChanged();
 
     // Restart clock
-    startedAt = QDateTime::currentDateTime();
+    startedAt = QDateTime::currentDateTimeUtc();
     emit ticks();
     expirationTimer.start();
     tickTimer.start();
