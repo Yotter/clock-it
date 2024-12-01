@@ -18,8 +18,9 @@ Window {
             anchors.fill: parent
             columns: 2
             Repeater {
-                model: 10
+                model: 1
                 Clock {
+                    cppObj: clock1
                     radius: 100
                 }
             }
