@@ -69,19 +69,57 @@ Item {
     }
 
 
-    // Clock title
-    Text {
-        id: clockTitle
-        text: clockItem.cppObj.name
+    Column {
+        id: textElements
         anchors.centerIn: parent
-        font.pixelSize: 20
+
+        // Clock title
+        Text {
+            id: clockTitle
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: clockItem.cppObj.name
+            font.pixelSize: clockItem.radius * 0.4
+        }
+
+        // Time left
+        Text {
+            id: timeLeft
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: formatTime(clockItem.cppObj.timeLeftSeconds)
+            font.pixelSize: clockItem.radius * 0.2
+        }
     }
 
-    // Time left
-    Text {
-        text: clockItem.cppObj.timeLeftSeconds + " seconds"
-        anchors.top: clockTitle.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 10
+
+    // Convert a number of seconds into a string like "5 months", "1 year", "17 seconds", etc.
+    function formatTime(seconds) {
+        function helpMe(number, word) {
+            let rounded = Math.floor(number).toString();
+            return rounded + " " + word + (rounded > 1 ? "s" : "");
+        }
+
+        let minutes = seconds / 60;
+        let hours = minutes / 60;
+        let days = hours / 24;
+        let weeks = days / 7;
+        let months = days / 30;
+        let years = days / 365;
+
+        if (years > 1) {
+            return helpMe(years, "year");
+        }
+        if (months > 1) {
+            return helpMe(months, "month");
+        }
+        if (days > 1) {
+            return helpMe(days, "day");
+        }
+        if (hours > 1) {
+            return helpMe(hours, "hour");
+        }
+        if (minutes > 1) {
+            return helpMe(minutes, "minute");
+        }
+        return helpMe(seconds, "second");
     }
 }
